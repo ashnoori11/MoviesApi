@@ -1,0 +1,32 @@
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
+
+namespace Infrastructure.Data;
+
+public class MoviesContext : DbContext
+{
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("moviesDb"),
+            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+            .EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), Array.Empty<int>()));
+    }
+
+    #region entities
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Actor> Actors { get; set; }
+    #endregion
+}
