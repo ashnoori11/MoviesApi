@@ -15,5 +15,8 @@ public class GenreEntityConfigurations : IEntityTypeConfiguration<Genre>
         builder.Property(a => a.Name)
             .HasColumnType("nvarchar(150)")
             .IsRequired(true);
+
+        builder.Property(a => a.RowVersion)
+            .IsRowVersion();
     }
 }

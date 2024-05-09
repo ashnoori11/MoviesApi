@@ -36,7 +36,8 @@ public class ActorsController : BaseController
         }
     }
 
-    [HttpGet("{actorId:int}")]
+
+    [HttpGet("{actorId:int}",Name ="GetActorById")]
     public async Task<IActionResult> Get(int actorId, CancellationToken cancellationToken)
     {
         try
@@ -50,7 +51,8 @@ public class ActorsController : BaseController
         }
     }
 
-    [HttpPut("{actorId:int}")]
+
+    [HttpPut("{actorId:int}",Name ="UpdateActor")]
     public async Task<IActionResult> Put(int actorId, [FromBody] CreateActorDto actor, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -69,6 +71,7 @@ public class ActorsController : BaseController
             return BadRequest(exp.Message);
         }
     }
+
 
     [HttpPost(Name = "CreateActor")]
     public async Task<IActionResult> Post([FromBody] CreateActorDto actor, CancellationToken cancellationToken)
@@ -90,7 +93,8 @@ public class ActorsController : BaseController
         }
     }
 
-    [HttpDelete("{actorId:int}")]
+
+    [HttpDelete("{actorId:int}",Name ="DeleteActor")]
     public async Task<IActionResult> Delete(int actorId, CancellationToken cancellationToken)
     {
         try

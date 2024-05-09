@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿using Infrastructure.Common.Enums;
+using Infrastructure.Data;
 using Infrastructure.Repositories.Contracts;
 
 namespace Infrastructure.UnitOfWorks;
@@ -9,5 +10,6 @@ public interface IUnitOfWork
     IGenresRepository GenreRepository { get; }
     IActorRepository ActorRepository { get; }
     IQueryRepository<T> GetQueryRepository<T>() where T : class;
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<SaveChangeStatus> SaveChangesAsync(CancellationToken cancellationToken);
+    Task SaveChangesAsync<T>(CancellationToken cancellationToken);
 }

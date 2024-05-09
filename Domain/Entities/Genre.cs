@@ -23,4 +23,5 @@ public class Genre
     public void UpdateGenreName(string newName) => Name = newName;
     public int Id { get; private set; }
     public string Name { get; private set; }
+    public byte[] RowVersion { get; private set; }
 }

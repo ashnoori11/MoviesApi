@@ -1,7 +1,9 @@
-﻿using Infrastructure.Data;
+﻿using Infrastructure.Common.Enums;
+using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Infrastructure.UnitOfWorks;
 
@@ -48,16 +50,66 @@ public class UnitOfwork : IDisposable, IUnitOfWork
     #endregion
 
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+    public async Task<SaveChangeStatus> SaveChangesAsync(CancellationToken cancellationToken)
     {
         try
         {
-            return await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return SaveChangeStatus.Succeed;
         }
-        catch (DbUpdateConcurrencyException ex)
+        catch (Exception ex)
         {
-            throw;
+            if (ex is DbUpdateConcurrencyException)
+                return SaveChangeStatus.Concurrent;
+            else
+                return SaveChangeStatus.Failure;
         }
     }
+    public async Task SaveChangesAsync<T>(CancellationToken cancellationToken)
+    {
+        var saved = false;
+        while (!saved)
+        {
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+                saved = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is T)
+                    {
+                        var proposedValues = entry.CurrentValues;
+                        var databaseValues = entry.GetDatabaseValues();
+
+                        if (databaseValues is null)
+                            continue;
+
+                        foreach (var property in proposedValues.Properties)
+                        {
+                            var proposedValue = proposedValues[property];
+                            var databaseValue = databaseValues[property];
+
+                            // TODO: decide which value should be written to database
+
+                            //< value to be saved >;
+                            proposedValues[property] = databaseValue; 
+                        }
+
+                        entry.OriginalValues.SetValues(databaseValues);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(
+                            "Don't know how to handle concurrency conflicts for "
+                            + entry.Metadata.Name);
+                    }
+                }
+            }
+        }
+    }
+
     public void Dispose() => _context.Dispose();
 }
