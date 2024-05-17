@@ -27,7 +27,6 @@ public class CreateActorCommandValidator : AbstractValidator<CreateActorCommand>
         RuleFor(a => a.Picture)
             .NotNull()
             .NotEmpty()
-            .MaximumLength(100)
-            .WithMessage("invalid picture name");
+            .WithMessage("image is required");
     }
 }

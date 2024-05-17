@@ -29,11 +29,5 @@ public class UpdateActorCommandValidator : AbstractValidator<UpdateActorCommand>
             .NotEmpty()
             .MaximumLength(849)
             .WithMessage("invalid length !");
-
-        RuleFor(a => a.Picture)
-            .NotNull()
-            .NotEmpty()
-            .MaximumLength(100)
-            .WithMessage("invalid picture name");
     }
 }

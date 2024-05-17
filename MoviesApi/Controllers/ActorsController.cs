@@ -14,10 +14,12 @@ namespace MoviesApi.Controllers;
 public class ActorsController : BaseController
 {
     #region constructor
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMediator _mediatR;
-    public ActorsController(IMediator mediatR)
+    public ActorsController(IMediator mediatR, IHttpContextAccessor httpContextAccessor)
     {
         _mediatR = mediatR;
+        _httpContextAccessor = httpContextAccessor;
     }
     #endregion
 
@@ -74,7 +76,7 @@ public class ActorsController : BaseController
 
 
     [HttpPost(Name = "CreateActor")]
-    public async Task<IActionResult> Post([FromBody] CreateActorDto actor, CancellationToken cancellationToken)
+    public async Task<IActionResult> Post([FromForm] CreateActorDto actor, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState.Values
@@ -84,7 +86,8 @@ public class ActorsController : BaseController
 
         try
         {
-            var getResult = await _mediatR.Send(new CreateActorCommand(actor.Name, actor.DateOfBirth, actor.Biography, actor.Picture), cancellationToken);
+            var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            var getResult = await _mediatR.Send(new CreateActorCommand(actor.Name, actor.DateOfBirth, actor.Biography, actor.Picture, url), cancellationToken);
             return Ok(getResult);
         }
         catch (Exception exp)

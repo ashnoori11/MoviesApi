@@ -8,15 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.2.2" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.7.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Interfaces\" />
-    <Folder Include="Common\Mappings\" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

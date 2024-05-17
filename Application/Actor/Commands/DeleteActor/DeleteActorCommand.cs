@@ -1,6 +1,9 @@
-﻿using Application.Common.Models;
+﻿using Application.Common.Extensions;
+using Application.Common.Models;
+using Application.Common.Utilities;
 using Infrastructure.UnitOfWorks;
 using MediatR;
+using System.Reflection;
 
 namespace Application.Actor.Commands.DeleteActor;
 
@@ -24,7 +27,17 @@ public class DeleteActorCommandHandler : IRequestHandler<DeleteActorCommand, Res
 
         await _unitOfWork.ActorRepository.DeleteActorAsync(getactor,cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
+        //if (!string.IsNullOrEmpty(getactor.Picture))
+        //{
+        //    var imageName = getactor.Picture.ExtractFileNameFromUrl();
+        //    var presentationDirectoryPath = Assembly.GetExecutingAssembly().Location;
+        //    string theImagePath =$"{presentationDirectoryPath}/Files/Images/Actors/{imageName}" ;
+
+        //    if (File.Exists(theImagePath))
+        //        File.Delete(theImagePath);
+        //}
+
         return Result.Success();
     }
 }

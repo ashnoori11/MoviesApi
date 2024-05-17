@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos;
 
@@ -15,5 +16,5 @@ public class CreateActorDto
     [MaxLength(849, ErrorMessage = "invalid {0} lenfth")]
     public string Biography { get; set; }
 
-    public string? Picture { get; set; } = null;
+    public IFormFile? Picture { get; set; } = null;
 }
