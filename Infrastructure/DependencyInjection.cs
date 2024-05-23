@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Infrastructure.Data;
 using Infrastructure.UnitOfWorks;
+using NetTopologySuite.Geometries;
+using NetTopologySuite;
 
 namespace Infrastructure;
 
@@ -12,6 +12,8 @@ public static class DependencyInjection
     {
         services.AddScoped<MoviesContext>();
         services.AddScoped<IUnitOfWork, UnitOfwork>();
+
+        services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid:4326));
 
         return services;
     }

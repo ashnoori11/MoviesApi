@@ -22,11 +22,13 @@ public class MoviesContext : DbContext
 
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("moviesDb"),
             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-            .EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), Array.Empty<int>()));
+            .EnableRetryOnFailure(3, TimeSpan.FromSeconds(30), Array.Empty<int>())
+            .UseNetTopologySuite());
     }
 
     #region entities
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Actor> Actors { get; set; }
+    public DbSet<MovieTheater> MovieTheaters { get; set; }
     #endregion
 }

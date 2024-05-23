@@ -4,7 +4,6 @@ using Application.Actor.Commands.UpdateActor;
 using Application.Actor.Queries;
 using Application.Dtos;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
