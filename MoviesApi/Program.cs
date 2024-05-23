@@ -50,6 +50,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    OnPrepareResponse = ctx => {
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", builder.Configuration.GetValue<string>("frontend_url"));
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers",
+          "Origin, X-Requested-With, Content-Type, Accept");
+    },
+});
 
 app.UseCors();
 

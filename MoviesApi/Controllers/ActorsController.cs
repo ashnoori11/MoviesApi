@@ -4,6 +4,7 @@ using Application.Actor.Commands.UpdateActor;
 using Application.Actor.Queries;
 using Application.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -15,11 +16,13 @@ public class ActorsController : BaseController
 {
     #region constructor
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IMediator _mediatR;
-    public ActorsController(IMediator mediatR, IHttpContextAccessor httpContextAccessor)
+    public ActorsController(IMediator mediatR, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
     {
         _mediatR = mediatR;
         _httpContextAccessor = httpContextAccessor;
+        _webHostEnvironment = webHostEnvironment;
     }
     #endregion
 
@@ -55,7 +58,7 @@ public class ActorsController : BaseController
 
 
     [HttpPut("{actorId:int}",Name ="UpdateActor")]
-    public async Task<IActionResult> Put(int actorId, [FromBody] CreateActorDto actor, CancellationToken cancellationToken)
+    public async Task<IActionResult> Put(int actorId, [FromForm] CreateActorDto actor, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState.Values
@@ -65,7 +68,8 @@ public class ActorsController : BaseController
 
         try
         {
-            var res = await _mediatR.Send(new UpdateActorCommand(actorId, actor.Name, actor.DateOfBirth, actor.Biography, actor.Picture), cancellationToken);
+            var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            var res = await _mediatR.Send(new UpdateActorCommand(actorId, actor.Name, actor.DateOfBirth, actor.Biography, _webHostEnvironment.WebRootPath,actor.Picture, url), cancellationToken);
             return Ok(res);
         }
         catch (Exception exp)
@@ -87,7 +91,7 @@ public class ActorsController : BaseController
         try
         {
             var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var getResult = await _mediatR.Send(new CreateActorCommand(actor.Name, actor.DateOfBirth, actor.Biography, actor.Picture, url), cancellationToken);
+            var getResult = await _mediatR.Send(new CreateActorCommand(actor.Name, actor.DateOfBirth, actor.Biography, actor.Picture,_webHostEnvironment.WebRootPath, url), cancellationToken);
             return Ok(getResult);
         }
         catch (Exception exp)
@@ -102,7 +106,7 @@ public class ActorsController : BaseController
     {
         try
         {
-            var result = await _mediatR.Send(new DeleteActorCommand(actorId), cancellationToken);
+            var result = await _mediatR.Send(new DeleteActorCommand(actorId,_webHostEnvironment.WebRootPath), cancellationToken);
 
             if (result.IsNotFound)
                 return NotFound($"can not find actor with id : {actorId}");

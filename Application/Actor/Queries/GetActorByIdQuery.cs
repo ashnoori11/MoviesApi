@@ -19,9 +19,13 @@ public class GetActorByIdQueryHandler : IRequestHandler<GetActorByIdQuery, Resul
     public async Task<Result<ActorsDto>> Handle(GetActorByIdQuery request, CancellationToken cancellationToken)
     {
         var getActor = await _unitOfWork.ActorRepository.GetActorByIdAsNoTrackingAsync(request.ActorId,cancellationToken);
+
         if (getActor is null)
             return Result<ActorsDto>.NotFound();
 
-        return Result<ActorsDto>.Success(getActor.Adapt<ActorsDto>());
+        var actorModel = getActor.Adapt<ActorsDto>();
+        actorModel.PictureUrl = getActor.Picture;
+
+        return Result<ActorsDto>.Success(actorModel);
     }
 }

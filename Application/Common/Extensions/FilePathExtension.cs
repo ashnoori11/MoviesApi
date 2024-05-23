@@ -5,11 +5,11 @@ public static class FilePathExtension
     public static string ExtractFileNameFromUrl(this string url)
     {
         string[] splitedUrl = url.Split('.');
-        if (splitedUrl.Length == 1)
+        if (splitedUrl.Length == 2)
         {
             string[] splitedRemainUrl = splitedUrl[0].Split("/");
             string theResult = splitedRemainUrl[splitedRemainUrl.Length - 1];
-            return $"{theResult}.{splitedUrl[0]}";
+            return $"{theResult}.{splitedUrl[splitedUrl.Length - 1]}";
         }
         else
         {
