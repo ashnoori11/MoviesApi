@@ -1,5 +1,6 @@
 using Application;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using MoviesApi.ApiBehavior;
 using MoviesApi.Filters;
 

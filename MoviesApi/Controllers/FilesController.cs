@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
+﻿using Application.Common.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MoviesApi.Controllers;
 
@@ -7,24 +7,29 @@ namespace MoviesApi.Controllers;
 [ApiController]
 public class FilesController : ControllerBase
 {
-    private readonly IFileProvider _fileProvider;
-    public FilesController(IFileProvider fileProvider)
-    {
-        _fileProvider = fileProvider;
-    }
-
     [HttpGet("{fileName}")]
-    public async Task<IActionResult> GetFile(string fileName,CancellationToken cancellationToken)
+    public async Task<IActionResult> GetImages(string fileName,CancellationToken cancellationToken)
     {
-        var filePath = Path.Combine("Files", fileName);
-        var fileInfo = _fileProvider.GetFileInfo(filePath);
-
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Files\\Images\\Actors", fileName);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (fileInfo.Exists)
+        if (System.IO.File.Exists(filePath))
         {
-            using var fileStream = fileInfo.CreateReadStream();
-            return File(fileStream, "application/octet-stream");
+            return File(System.IO.File.ReadAllBytes(filePath), fileName.GetMimeType());
+        }
+
+        return NotFound();
+    }
+
+    [HttpGet("{fileDirectory}/{fileName}")]
+    public async Task<IActionResult> GetFile(string fileDirectory,string fileName, CancellationToken cancellationToken)
+    {
+        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), fileDirectory, fileName);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (System.IO.File.Exists(fullPath))
+        {
+            return File(System.IO.File.ReadAllBytes(fullPath), fileName.GetMimeType());
         }
 
         return NotFound();
