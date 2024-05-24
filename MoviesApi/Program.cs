@@ -1,7 +1,8 @@
 using Application;
+using DotNetEnv;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 using MoviesApi.ApiBehavior;
+using MoviesApi.FileStorageServices;
 using MoviesApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +41,8 @@ builder.Services.AddCors(options =>
         .WithExposedHeaders(new string[] {"totalAmountOfRecords"});
     });
 });
+
+builder.Services.AddScoped<IS3Service, S3Service>();
 
 var app = builder.Build();
 
