@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /MoviesApi/Files/Images/Actors
 /MoviesApi/wwwroot/Images/Actors
+/MoviesApi/.env
