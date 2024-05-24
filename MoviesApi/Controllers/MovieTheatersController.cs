@@ -1,5 +1,12 @@
-﻿using MediatR;
+﻿using Application.Dtos;
+using Application.MovieTheater.Commands.CreateMovieTheater;
+using Application.MovieTheater.Commands.DeleteMovieTheater;
+using Application.MovieTheater.Commands.UpdateMovieTheater;
+using Application.MovieTheater.Queries;
+using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace MoviesApi.Controllers;
 
@@ -8,14 +15,101 @@ namespace MoviesApi.Controllers;
 public class MovieTheatersController : BaseController
 {
     #region constructor
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IMediator _mediatR;
-    public MovieTheatersController(IMediator mediatR, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
+    public MovieTheatersController(IMediator mediatR)
     {
         _mediatR = mediatR;
-        _httpContextAccessor = httpContextAccessor;
-        _webHostEnvironment = webHostEnvironment;
     }
     #endregion
+
+    [HttpGet(Name = "GetMovieTheaters")]
+    [OutputCache(PolicyName = "Paginating")]
+    public async Task<IActionResult> Get([FromQuery] PaginationDto pagingDto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var getGenres = await _mediatR.Send(pagingDto.Adapt<GetAllMovieTheatersWithPaginationQuery>(), cancellationToken);
+            return Ok(getGenres);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp.Message);
+        }
+    }
+
+    [HttpGet("{movieTheaterId:int}")]
+    [OutputCache(PolicyName = "SingleRow")]
+    public async Task<IActionResult> Get(int movieTheaterId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var getGenres = await _mediatR.Send(new GetMovieTheaterByIdQuery(movieTheaterId), cancellationToken);
+            return Ok(getGenres);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp.Message);
+        }
+    }
+
+    [HttpPut("{movieTheaterId:int}")]
+    public async Task<IActionResult> Put(int movieTheaterId, [FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList());
+
+        try
+        {
+            var res = await _mediatR.Send(new UpdateMovieTheaterCommand(movieTheaterId, movieTheater.Name, movieTheater.Latitude, movieTheater.Longitude)
+                , cancellationToken);
+
+            return Ok(res);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp.Message);
+        }
+    }
+
+    [HttpPost(Name = "CreateMovieTheater")]
+    public async Task<IActionResult> Post([FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList());
+
+        try
+        {
+            var getResult = await _mediatR.Send(movieTheater.Adapt<CreateMovieTheaterCommand>(), cancellationToken);
+            return Ok(getResult);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp.Message);
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _mediatR.Send(new DeleteMovieTheaterCommand(id), cancellationToken);
+
+            if (result.IsNotFound)
+                return NotFound($"can not find Movie Theater with id : {id}");
+
+            return Ok(result);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp.Message);
+        }
+    }
+
 }

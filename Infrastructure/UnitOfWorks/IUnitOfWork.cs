@@ -10,6 +10,7 @@ public interface IUnitOfWork
     IGenresRepository GenreRepository { get; }
     IActorRepository ActorRepository { get; }
     IQueryRepository<T> GetQueryRepository<T>() where T : class;
+    IMovieTheaterRepository MovieTheaterRepository { get; }
     Task<SaveChangeStatus> SaveChangesAsync(CancellationToken cancellationToken);
     Task SaveChangesAsync<T>(CancellationToken cancellationToken);
 }

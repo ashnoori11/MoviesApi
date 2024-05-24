@@ -49,6 +49,20 @@ public class UnitOfwork : IDisposable, IUnitOfWork
     }
     #endregion
 
+    #region MovieTheater Repository
+    private IMovieTheaterRepository _movieTheaterRepository;
+    public IMovieTheaterRepository MovieTheaterRepository 
+    {
+        get
+        {
+            if (_movieTheaterRepository is null)
+                _movieTheaterRepository = new MovieTheaterRepository(_context);
+
+            return _movieTheaterRepository;
+        }
+    }
+    #endregion
+
 
     public async Task<SaveChangeStatus> SaveChangesAsync(CancellationToken cancellationToken)
     {

@@ -1,6 +1,6 @@
 ﻿using Application.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using MoviesApi.FileStorageServices;
+using MoviesApi.FileStorageServices.Liara;
 
 namespace MoviesApi.Controllers;
 
@@ -8,8 +8,8 @@ namespace MoviesApi.Controllers;
 [ApiController]
 public class FilesController : ControllerBase
 {
-    private readonly IS3Service _s3Service;
-    public FilesController(IS3Service s3Service)
+    private readonly ILiaraStorageService _s3Service;
+    public FilesController(ILiaraStorageService s3Service)
     {
         _s3Service = s3Service;
     }

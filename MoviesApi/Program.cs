@@ -2,7 +2,7 @@ using Application;
 using DotNetEnv;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.ApiBehavior;
-using MoviesApi.FileStorageServices;
+using MoviesApi.FileStorageServices.Liara;
 using MoviesApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +42,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IS3Service, S3Service>();
+builder.Services.AddScoped<ILiaraStorageService, LiaraStorageService>();
 
 var app = builder.Build();
 

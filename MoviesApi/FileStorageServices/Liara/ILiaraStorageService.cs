@@ -1,6 +1,6 @@
-﻿namespace MoviesApi.FileStorageServices;
+﻿namespace MoviesApi.FileStorageServices.Liara;
 
-public interface IS3Service
+public interface ILiaraStorageService
 {
     Task<(bool Status, string FileName, string Message)> UploadToS3Async(IFormFile image, CancellationToken cancellationToken);
     Task<(bool Status, string FilePath, string Message)> DownloadFromS3Async(string objectkey, string directory, CancellationToken cancellationToken);

@@ -1,6 +1,5 @@
 ﻿using Application.Common.Models;
 using Infrastructure.UnitOfWorks;
-using Mapster;
 using MediatR;
 
 namespace Application.MovieTheater.Queries;
