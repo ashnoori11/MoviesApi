@@ -29,7 +29,7 @@ public class MovieTheaterDto
     {
         ConcurrentBag<MovieTheaterDto> dtos = new();
 
-        Task.Run(() =>
+        await Task.Run(() =>
         {
             cancellationToken.ThrowIfCancellationRequested();
             Parallel.ForEach(domainModels, async domainModel =>

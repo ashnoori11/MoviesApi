@@ -1,6 +1,7 @@
 ﻿using Application.Common.Models;
 using Infrastructure.UnitOfWorks;
 using MediatR;
+using NetTopologySuite;
 using NetTopologySuite.Geometries;
 
 namespace Application.MovieTheater.Commands.UpdateMovieTheater;
@@ -26,9 +27,10 @@ public class UpdateMovieTheaterCommandHandler : IRequestHandler<UpdateMovieTheat
         if (getMovieTheater is null)
             return Result.NotFound();
 
-        var locationPoint = new Point(request.Longitude, request.Latitude);
+        var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+        var currentLocation = geometryFactory.CreatePoint(new NetTopologySuite.Geometries.Coordinate(request.Latitude, request.Longitude));
 
-        getMovieTheater.SetChanges(request.Name, locationPoint);
+        getMovieTheater.SetChanges(request.Name, currentLocation);
         await _unitOfWork.MovieTheaterRepository.UpdateMovieTheaterAsync(getMovieTheater,cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -9,10 +9,13 @@ public class MovieTheaterEntityConfiguration : IEntityTypeConfiguration<MovieThe
     public void Configure(EntityTypeBuilder<MovieTheater> builder)
     {
         builder.HasKey(a => a.Id);
-        builder.Property(a=>a.Id).ValueGeneratedOnAdd();
+        builder.Property(a=>a.Id)
+            .ValueGeneratedOnAdd();
 
         builder.Property(a => a.Name)
             .HasColumnType("nvarchar(75)")
             .IsRequired(true);
+
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Application.Common.Models;
 using Infrastructure.UnitOfWorks;
 using MediatR;
-using NetTopologySuite.Geometries;
+using NetTopologySuite;
 
 namespace Application.MovieTheater.Commands.CreateMovieTheater;
 
@@ -19,10 +19,13 @@ public class CreateMovieTheaterCommandHandler : IRequestHandler<CreateMovieTheat
 
     public async Task<Result> Handle(CreateMovieTheaterCommand request, CancellationToken cancellationToken)
     {
-        var locationPoinr = new Point(request.Longitude,request.Latitude);
-        var forInsertObject = new Domain.Entities.MovieTheater(request.Name, locationPoinr);
+        var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+        var currentLocation = geometryFactory.CreatePoint(new NetTopologySuite.Geometries.Coordinate(request.Latitude, request.Longitude));
+
+        var forInsertObject = new Domain.Entities.MovieTheater(request.Name, currentLocation);
         await _unitOfWork.MovieTheaterRepository.InsertMovieTheaterAsync(forInsertObject,cancellationToken);
 
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
 }
