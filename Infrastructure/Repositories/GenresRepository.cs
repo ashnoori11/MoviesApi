@@ -21,24 +21,19 @@ public class GenresRepository : IGenresRepository
 
         await Task.CompletedTask;
     }
-
     public async Task DeleteGenreAsync(Genre genre, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         _moviesContext.Genres.Remove(genre);
         await Task.CompletedTask;
     }
-
-
     public async Task<Genre?> GetGenreByIdAsync(int id, CancellationToken cancellationToken)
         => await _moviesContext.Genres.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
-
     public async Task<int> InsertGenreAsync(Genre genre, CancellationToken cancellationToken)
     {
         var addedResult = await _moviesContext.Genres.AddAsync(genre, cancellationToken);
         return addedResult.Entity.Id;
     }
-
     public async Task UpdateGenreAsync(Genre genre, CancellationToken cancellationToken)
     {
         var getGenre = await _moviesContext.Genres.FirstOrDefaultAsync(a => a.Id == genre.Id, cancellationToken);

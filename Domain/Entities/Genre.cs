@@ -24,4 +24,6 @@ public class Genre
     public int Id { get; private set; }
     public string Name { get; private set; }
     public byte[] RowVersion { get; private set; }
+
+    public virtual ICollection<MovieGenres> MovieGenres { get; private set; }
 }

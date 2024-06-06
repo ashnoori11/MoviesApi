@@ -2,7 +2,7 @@
 
 namespace Application.Dtos;
 
-public class CreateGenreDto
+public record CreateGenreDto
 {
     [Required(ErrorMessage ="{0} is required")]
     [MinLength(3,ErrorMessage ="{0} can not be less than {1} characters")]

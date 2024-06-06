@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos;
 
-public class CreateActorDto
+public record CreateActorDto
 {
     [Required(ErrorMessage ="{0} is reqiured")]
     [MinLength(2,ErrorMessage ="invalid {0} length")]

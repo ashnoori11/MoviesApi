@@ -2,6 +2,7 @@
 using Application.Actor.Commands.DeleteActor;
 using Application.Actor.Commands.UpdateActor;
 using Application.Actor.Queries;
+using Application.Common.Models;
 using Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,23 @@ public class ActorsController : BaseController
         catch (Exception exp)
         {
             return BadRequest(exp.Message);
+        }
+    }
+
+    [HttpGet("SearchByName/{query}")]
+    public async Task<IActionResult> Get(string query,CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return Ok(Result<ActorSearchResultDto>.Success());
+
+            var getActors = await _mediatR.Send(new SearchActorByNameQuery(query),cancellationToken);
+            return Ok(getActors);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp);
         }
     }
 

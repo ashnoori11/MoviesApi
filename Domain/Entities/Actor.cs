@@ -29,4 +29,6 @@ public class Actor
     public string Biography { get; private set; }
     public string Picture { get; private set; }
     public byte[] RowVersion { get; private set; }
+
+    public virtual ICollection<MovieActors> MovieActors { get; private set; }
 }

@@ -26,6 +26,8 @@ public class MovieTheater
     public string Name { get; private set; }
     public Point Location { get; private set; }
 
+    public virtual ICollection<MovieTheaterMovies> MovieTheaterMovies { get; private set; }
+
     #region NetTopologySuite.Geometries Raw Sql
     //INSERT INTO my_table(geometry_column) VALUES(ST_GeomFromText('POINT(10 20)', 4326));
     //UPDATE my_table SET geometry_column = ST_GeomFromText('LINESTRING(0 0, 10 10)', 4326) WHERE id = 1;

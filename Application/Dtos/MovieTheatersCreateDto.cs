@@ -1,9 +1,8 @@
-﻿using Application.MovieTheater.Commands.CreateMovieTheater;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos;
 
-public class MovieTheatersCreateDto
+public record MovieTheatersCreateDto
 {
     [Required(ErrorMessage = "{0} is required")]
     [MaxLength(75,ErrorMessage = "{0} can not be more than {1} characters")]

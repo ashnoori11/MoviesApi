@@ -11,6 +11,8 @@ public interface IUnitOfWork
     IActorRepository ActorRepository { get; }
     IQueryRepository<T> GetQueryRepository<T>() where T : class;
     IMovieTheaterRepository MovieTheaterRepository { get; }
+    IMovieRepository MovieRepository { get; }
+
     Task<SaveChangeStatus> SaveChangesAsync(CancellationToken cancellationToken);
     Task SaveChangesAsync<T>(CancellationToken cancellationToken);
 }
