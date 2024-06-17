@@ -2,7 +2,6 @@
 using Infrastructure.Data;
 using Infrastructure.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace Infrastructure.Repositories;
 
@@ -44,13 +43,13 @@ public class MovieRepository : IMovieRepository
 
     public async Task<int> GetMaxOrderOfMovieActorsAsync(CancellationToken cancellationToken)
     {
-        try
-        {
-            return await _context.MovieActors.MaxAsync(a => a.Order, cancellationToken);
-        }
-        catch (Exception exp)
-        {
-            return 0;
-        }
+        IQueryable<MovieActors> movieActors = _context
+            .MovieActors
+            .AsNoTracking();
+
+        if (await movieActors.AnyAsync(cancellationToken))
+            return await movieActors.MaxAsync(a=>a.Order,cancellationToken);
+
+        return 0;
     }
 }

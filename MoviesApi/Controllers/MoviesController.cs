@@ -1,5 +1,4 @@
-﻿using Application.Movie.Commands.CreateMovie;
-using Application.Movie.Queries;
+﻿using Application.Movie.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.Dtos;
@@ -59,24 +58,13 @@ public class MoviesController : BaseController
             //    var uploadImageResult = await _storageService.UploadToS3Async(model.Poster,cancellationToken);
             //    if (!uploadImageResult.Status)
             //        throw new Exception($"an error occared during upload the image - error : {uploadImageResult.Message}");
-
             //    fileUrl = uploadImageResult.FileName;
             //}
 
-            var res = await _mediatR.Send(
-                new CreateMovieCommand(
-                    model.Title,
-                    model.Summery,
-                    model.Trailer,
-                    model.InTheaters,
-                    model.ReleaseDate,
-                    model.Poster,
-                    model.GenreIds,
-                    model.MovieTheaterIds,
-                    model.Actors,
-                    _webHostEnvironment.WebRootPath,
-                    $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}")
-                , cancellationToken);
+            var res = await _mediatR
+                .Send(model.ConvertToCreateMovieCommand(model,_webHostEnvironment.WebRootPath, 
+                $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}")
+                ,cancellationToken);
 
             if (!res.Succeeded)
                 return BadRequest(res.Errors);

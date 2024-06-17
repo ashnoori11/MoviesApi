@@ -1,4 +1,6 @@
 ﻿using Application.Dtos;
+using Application.Movie.Commands.CreateMovie;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.Helpers;
 using System.ComponentModel.DataAnnotations;
@@ -32,4 +34,21 @@ public record MovieFormDto
 
     [ModelBinder(BinderType = typeof(TypeBinder<List<MoviesActorsFormDto>>))]
     public List<MoviesActorsFormDto> Actors { get; set; }
+
+    public CreateMovieCommand ConvertToCreateMovieCommand(MovieFormDto model, string rootPath, string url)
+    {
+        return new CreateMovieCommand(
+                model.Title,
+                model.Summery,
+                model.Trailer,
+                model.InTheaters,
+                model.ReleaseDate,
+                model.Poster,
+                model.GenreIds,
+                model.MovieTheaterIds,
+                model.Actors,
+                rootPath,
+                url
+                );
+    }
 }
