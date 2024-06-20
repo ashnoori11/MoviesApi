@@ -29,6 +29,12 @@ public class GenresRepository : IGenresRepository
     }
     public async Task<Genre?> GetGenreByIdAsync(int id, CancellationToken cancellationToken)
         => await _moviesContext.Genres.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+    public async Task<List<Genre>> GetGenresByIdsNotrackingAsync(int[] ids, CancellationToken cancellationToken)
+        => await _moviesContext
+        .Genres
+        .AsNoTracking()
+        .Where(a => ids.Contains(a.Id))
+        .ToListAsync(cancellationToken);
     public async Task<int> InsertGenreAsync(Genre genre, CancellationToken cancellationToken)
     {
         var addedResult = await _moviesContext.Genres.AddAsync(genre, cancellationToken);

@@ -29,6 +29,15 @@ public class MovieRepository : IMovieRepository
         .Include(a => a.MovieActors)
         .FirstOrDefaultAsync(a => a.Title == name, cancellationToken);
 
+
+    public async Task<Movie?> FindMovieByIdAsync(int id, CancellationToken cancellationToken)
+        => await _context
+        .Movies
+        .Include(a => a.MovieGenres)
+        .Include(a => a.MovieTheaterMovies)
+        .Include(a => a.MovieActors)
+        .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+
     public Task InsertMovieAsync(Movie movie, int[] genres, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
@@ -48,7 +57,7 @@ public class MovieRepository : IMovieRepository
             .AsNoTracking();
 
         if (await movieActors.AnyAsync(cancellationToken))
-            return await movieActors.MaxAsync(a=>a.Order,cancellationToken);
+            return await movieActors.MaxAsync(a => a.Order, cancellationToken);
 
         return 0;
     }

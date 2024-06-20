@@ -9,4 +9,5 @@ public interface IGenresRepository
     Task DeleteGenreByIdAsync(int genreId,CancellationToken cancellationToken);
     Task<int> InsertGenreAsync(Genre genre, CancellationToken cancellationToken);
     Task DeleteGenreAsync(Genre genre, CancellationToken cancellationToken);
+    Task<List<Genre>> GetGenresByIdsNotrackingAsync(int[] ids, CancellationToken cancellationToken);
 }

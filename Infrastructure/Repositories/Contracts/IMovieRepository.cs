@@ -10,4 +10,5 @@ public interface IMovieRepository
     Task<Movie?> FindMovieByNameAsync(string name, CancellationToken cancellationToken);
     Task<int> GetMaxOrderOfMovieActorsAsync(CancellationToken cancellationToken);
     Task UpdateMovieAsync(Movie movie, CancellationToken cancellationToken);
+    Task<Movie?> FindMovieByIdAsync(int id, CancellationToken cancellationToken);
 }

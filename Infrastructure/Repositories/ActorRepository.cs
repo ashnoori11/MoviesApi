@@ -28,6 +28,13 @@ public class ActorRepository : IActorRepository
     public async Task<Actor?> GetActorByIdAsync(int actorId, CancellationToken cancellationToken)
         => await _context.Actors.FirstOrDefaultAsync(a => a.Id == actorId, cancellationToken);
 
+    public async Task<List<Actor>> GetActorsByIsdNoTrackingAsync(int[] actorIds, CancellationToken cancellationToken)
+    => await _context.Actors
+        .AsNoTracking()
+        .Where(a => actorIds.Contains(a.Id))
+        .ToListAsync(cancellationToken);
+
+
     public async Task UpdateActorAsync(Actor actor, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

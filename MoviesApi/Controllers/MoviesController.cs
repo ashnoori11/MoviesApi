@@ -18,7 +18,7 @@ public class MoviesController : BaseController
     public MoviesController(IMediator mediatR,
         ILiaraStorageService storageService,
         IHttpContextAccessor httpContextAccessor,
-        IWebHostEnvironment  webHostEnvironment)
+        IWebHostEnvironment webHostEnvironment)
     {
         _mediatR = mediatR;
         _storageService = storageService;
@@ -41,8 +41,22 @@ public class MoviesController : BaseController
         }
     }
 
-    [HttpPost(Name ="CreateNewMovie")]
-    public async Task<IActionResult> Post([FromForm] MovieFormDto model,CancellationToken cancellationToken)
+    [HttpGet, Route("{id:int}")]
+    public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var movieData = await _mediatR.Send(new GetMovieByIdQuery(id), cancellationToken);
+            return Ok(movieData.Data);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp);
+        }
+    }
+
+    [HttpPost(Name = "CreateNewMovie")]
+    public async Task<IActionResult> Post([FromForm] MovieFormDto model, CancellationToken cancellationToken)
     {
         try
         {
@@ -52,19 +66,10 @@ public class MoviesController : BaseController
                         .Select(e => e.ErrorMessage)
                         .ToList());
 
-            //string fileUrl = string.Empty;
-            //if(model.Poster is object)
-            //{
-            //    var uploadImageResult = await _storageService.UploadToS3Async(model.Poster,cancellationToken);
-            //    if (!uploadImageResult.Status)
-            //        throw new Exception($"an error occared during upload the image - error : {uploadImageResult.Message}");
-            //    fileUrl = uploadImageResult.FileName;
-            //}
-
             var res = await _mediatR
-                .Send(model.ConvertToCreateMovieCommand(model,_webHostEnvironment.WebRootPath, 
+                .Send(model.ConvertToCreateMovieCommand(model, _webHostEnvironment.WebRootPath,
                 $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}")
-                ,cancellationToken);
+                , cancellationToken);
 
             if (!res.Succeeded)
                 return BadRequest(res.Errors);

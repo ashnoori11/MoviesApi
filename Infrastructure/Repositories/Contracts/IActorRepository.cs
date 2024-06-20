@@ -9,4 +9,5 @@ public interface IActorRepository
     Task DeleteActorAsync(Actor actor,CancellationToken cancellationToken);
     Task<Actor?> GetActorByIdAsync(int actorId,CancellationToken cancellationToken);
     Task<Actor?> GetActorByIdAsNoTrackingAsync(int actorId, CancellationToken cancellationToken);
+    Task<List<Actor>> GetActorsByIsdNoTrackingAsync(int[] actorIds, CancellationToken cancellationToken);
 }

@@ -26,8 +26,15 @@ public class MovieTheaterRepository : IMovieTheaterRepository
         .MovieTheaters
         .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
+    public async Task<List<MovieTheater>> GetMovieTheatersByIdAsNoTracking(int[] ids, CancellationToken cancellationToken)
+     => await _context
+    .MovieTheaters
+    .Where(a => ids.Contains(a.Id))
+    .ToListAsync(cancellationToken);
+
+
     public async Task InsertMovieTheaterAsync(MovieTheater movieTheater, CancellationToken cancellationToken)
-        => await _context.MovieTheaters.AddAsync(movieTheater,cancellationToken);
+        => await _context.MovieTheaters.AddAsync(movieTheater, cancellationToken);
 
     public async Task UpdateMovieTheaterAsync(MovieTheater movieTheater, CancellationToken cancellationToken)
     {
