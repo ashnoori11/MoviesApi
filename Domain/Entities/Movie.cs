@@ -27,7 +27,7 @@ public class Movie
     }
 
     public void SetPoster(string poster) => Poster = poster;
-    public void SetReleaseDate(DateTime releaseDate) => ReleaseDate = releaseDate;
+    public void SetReleaseDate(DateTime? releaseDate) => ReleaseDate = releaseDate;
     public void SetMovieStatus(bool isTheater) => isTheater = isTheater;
     public void SetChanges(string title, string summery, string trailer, bool inTheaters, DateTime? releaseDate, string poster)
     {

@@ -35,6 +35,7 @@ public class GenresRepository : IGenresRepository
         .AsNoTracking()
         .Where(a => ids.Contains(a.Id))
         .ToListAsync(cancellationToken);
+
     public async Task<int> InsertGenreAsync(Genre genre, CancellationToken cancellationToken)
     {
         var addedResult = await _moviesContext.Genres.AddAsync(genre, cancellationToken);

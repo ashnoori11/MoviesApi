@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Movie.Commands.CreateMovie;
+using Application.Movie.Commands.EditMovie;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.Helpers;
 using System.ComponentModel.DataAnnotations;
@@ -7,9 +8,10 @@ using System.Text.Json.Serialization;
 
 namespace MoviesApi.Dtos;
 
-public record MovieFormDto
+public record EditMovieFormDto
 {
-    public int? Id { get; set; }
+    [Required]
+    public int Id { get; set; }
 
     [Required, MaxLength(74)]
     public string Title { get; set; }
@@ -26,7 +28,7 @@ public record MovieFormDto
     public DateTime? ReleaseDate { get; set; } = null;
 
     [Required]
-    public IFormFile Poster { get; set; }
+    public IFormFile? Poster { get; set; }
 
     [ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
     public List<int> GenreIds { get; set; }
@@ -37,9 +39,10 @@ public record MovieFormDto
     [ModelBinder(BinderType = typeof(TypeBinder<List<MoviesActorsFormDto>>))]
     public List<MoviesActorsFormDto> Actors { get; set; }
 
-    public CreateMovieCommand ConvertToCreateMovieCommand(MovieFormDto model, string rootPath, string url)
+    public EditMovieCommand ConvertToCreateMovieCommand(EditMovieFormDto model, string rootPath, string url)
     {
-        return new CreateMovieCommand(
+        return new EditMovieCommand(
+                model.Id,
                 model.Title,
                 model.Summery,
                 model.Trailer,

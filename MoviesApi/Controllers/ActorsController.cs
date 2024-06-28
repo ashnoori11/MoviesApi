@@ -7,6 +7,7 @@ using Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using MoviesApi.Filters;
 
 namespace MoviesApi.Controllers;
 
@@ -75,14 +76,9 @@ public class ActorsController : BaseController
 
 
     [HttpPut("{actorId:int}",Name ="UpdateActor")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int actorId, [FromForm] CreateActorDto actor, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList());
-
         try
         {
             var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
@@ -97,14 +93,9 @@ public class ActorsController : BaseController
 
 
     [HttpPost(Name = "CreateActor")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromForm] CreateActorDto actor, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList());
-
         try
         {
             var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";

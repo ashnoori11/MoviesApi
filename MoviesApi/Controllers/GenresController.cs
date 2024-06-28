@@ -7,6 +7,7 @@ using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using MoviesApi.Filters;
 
 namespace MoviesApi.Controllers;
 
@@ -53,6 +54,7 @@ public class GenresController : BaseController
     }
 
     [HttpPut("{genreId:int}")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int genreId, [FromBody]CreateGenreDto genre,CancellationToken cancellationToken)
     {
         try
@@ -67,6 +69,7 @@ public class GenresController : BaseController
     }
 
     [HttpPost(Name = "CreateGenre")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromBody] CreateGenreDto createGenre, CancellationToken cancellationToken)
     {
         try

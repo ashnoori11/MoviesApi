@@ -44,4 +44,11 @@ public class ActorRepository : IActorRepository
 
     public async Task<Actor?> GetActorByIdAsNoTrackingAsync(int actorId, CancellationToken cancellationToken)
         => await _context.Actors.FirstOrDefaultAsync(a => a.Id == actorId, cancellationToken);
+
+    public async Task<List<Actor>> GetActorsByIdsAsNoTrackingAsync(int[] ids, CancellationToken cancellationToken)
+        => await _context.Actors
+        .AsNoTrackingWithIdentityResolution()
+        .Include(a=>a.MovieActors)
+        .Where(a=> ids.Contains(a.Id))
+        .ToListAsync(cancellationToken);
 }

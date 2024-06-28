@@ -31,6 +31,7 @@ public class MovieActorsEntityConfiguration : IEntityTypeConfiguration<MovieActo
 
         builder.HasOne(a => a.Actor)
             .WithMany(a => a.MovieActors)
-            .HasForeignKey(a => a.ActorId);
+            .HasForeignKey(a => a.ActorId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

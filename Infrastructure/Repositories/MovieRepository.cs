@@ -21,6 +21,25 @@ public class MovieRepository : IMovieRepository
     public async Task<bool> IsDuplicateMovieAsync(string name, CancellationToken cancellationToken)
         => await _context.Movies.AnyAsync(a => a.Title == name, cancellationToken);
 
+    public async Task<bool> IsDuplicateMovieAsync(int movieId,string name, CancellationToken cancellationToken)
+        => await _context.Movies.AnyAsync(a => a.Id != movieId && a.Title == name, cancellationToken);
+
+    public async Task<List<Movie>> GetTopInTheaterMoviesAsync(int top, CancellationToken cancellationToken)
+        => await _context.Movies
+        .AsNoTracking()
+        .Where(a => a.InTheaters == true)
+        .OrderByDescending(a => a.ReleaseDate)
+        .Take(top)
+        .ToListAsync(cancellationToken);
+
+    public async Task<List<Movie>> GetTopUpCommingMoviesAsync(int top, CancellationToken cancellationToken)
+        => await _context.Movies
+        .AsNoTracking()
+        .Where(a => a.ReleaseDate > DateTime.Now)
+        .OrderByDescending(a => a.ReleaseDate)
+        .Take(top)
+        .ToListAsync(cancellationToken);
+
     public async Task<Movie?> FindMovieByNameAsync(string name, CancellationToken cancellationToken)
         => await _context
         .Movies
@@ -37,11 +56,6 @@ public class MovieRepository : IMovieRepository
         .Include(a => a.MovieTheaterMovies)
         .Include(a => a.MovieActors)
         .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
-
-    public Task InsertMovieAsync(Movie movie, int[] genres, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task UpdateMovieAsync(Movie movie, CancellationToken cancellationToken)
     {
@@ -60,5 +74,36 @@ public class MovieRepository : IMovieRepository
             return await movieActors.MaxAsync(a => a.Order, cancellationToken);
 
         return 0;
+    }
+
+    public async Task<Movie?> GetJustMovieByIdAsync(int movieId, CancellationToken cancellationToken)
+        => await _context.Movies
+        .Include(a => a.MovieActors)
+        .Include(a => a.MovieTheaterMovies)
+        .Include(a => a.MovieGenres)
+        .FirstOrDefaultAsync(a => a.Id == movieId, cancellationToken);
+
+
+    public async Task<Movie?> GetFullMovieByIdAsync(int movieId, CancellationToken cancellationToken)
+            => await _context.Movies
+            .Include(a => a.MovieActors)
+            .Include(a => a.MovieTheaterMovies)
+            .Include(a => a.MovieGenres)
+            .FirstOrDefaultAsync(a => a.Id == movieId, cancellationToken);
+
+    public async Task<Movie?> GetFullMovieByIdNoTrackingAsync(int movieId, CancellationToken cancellationToken)
+        => await _context.Movies
+        .AsNoTrackingWithIdentityResolution()
+        .Include(a => a.MovieActors)
+        .Include(a => a.MovieTheaterMovies)
+        .Include(a => a.MovieGenres)
+        .FirstOrDefaultAsync(a => a.Id == movieId, cancellationToken);
+
+
+    public async Task DeleteMovie(Movie movie,CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _context.Movies.Remove(movie);
+        await Task.CompletedTask;
     }
 }

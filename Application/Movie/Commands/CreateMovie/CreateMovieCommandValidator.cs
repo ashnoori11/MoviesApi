@@ -17,9 +17,9 @@ public class CreateMovieCommandValidator : AbstractValidator<CreateMovieCommand>
             .NotEmpty()
             .NotNull();
 
-        RuleFor(a => a.MovieTheatersIds)
-            .NotEmpty()
-            .NotNull();
+        //RuleFor(a => a.MovieTheatersIds)
+        //    .NotEmpty()
+        //    .NotNull();
 
         RuleFor(a => a.Actors)
             .NotEmpty()

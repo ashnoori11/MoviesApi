@@ -24,6 +24,7 @@ public class MovieTheaterRepository : IMovieTheaterRepository
     public async Task<MovieTheater?> GetMovieTheaterByIdAsNoTracking(int id, CancellationToken cancellationToken)
          => await _context
         .MovieTheaters
+        .AsNoTracking()
         .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
     public async Task<List<MovieTheater>> GetMovieTheatersByIdAsNoTracking(int[] ids, CancellationToken cancellationToken)

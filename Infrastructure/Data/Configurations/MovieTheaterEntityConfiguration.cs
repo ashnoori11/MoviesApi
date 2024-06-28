@@ -15,7 +15,5 @@ public class MovieTheaterEntityConfiguration : IEntityTypeConfiguration<MovieThe
         builder.Property(a => a.Name)
             .HasColumnType("nvarchar(75)")
             .IsRequired(true);
-
-
     }
 }

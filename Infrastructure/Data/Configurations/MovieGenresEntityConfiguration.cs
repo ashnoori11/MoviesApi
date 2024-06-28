@@ -24,6 +24,7 @@ public class MovieGenresEntityConfiguration : IEntityTypeConfiguration<MovieGenr
 
         builder.HasOne(a => a.Movie)
             .WithMany(a => a.MovieGenres)
-            .HasForeignKey(a => a.MovieId);
+            .HasForeignKey(a => a.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

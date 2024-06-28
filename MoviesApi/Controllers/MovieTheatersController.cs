@@ -7,6 +7,7 @@ using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using MoviesApi.Filters;
 
 namespace MoviesApi.Controllers;
 
@@ -53,14 +54,9 @@ public class MovieTheatersController : BaseController
     }
 
     [HttpPut("{movieTheaterId:int}")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int movieTheaterId, [FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList());
-
         try
         {
             var res = await _mediatR.Send(new UpdateMovieTheaterCommand(movieTheaterId, movieTheater.Name, movieTheater.Latitude, movieTheater.Longitude)
@@ -75,14 +71,9 @@ public class MovieTheatersController : BaseController
     }
 
     [HttpPost(Name = "CreateMovieTheater")]
+    [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList());
-
         try
         {
             var getResult = await _mediatR.Send(movieTheater.Adapt<CreateMovieTheaterCommand>(), cancellationToken);

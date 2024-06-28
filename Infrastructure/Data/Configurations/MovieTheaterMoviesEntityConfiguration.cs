@@ -24,6 +24,7 @@ public class MovieTheaterMoviesEntityConfiguration : IEntityTypeConfiguration<Mo
 
         builder.HasOne(a => a.Movie)
             .WithMany(a => a.MovieTheaterMovies)
-            .HasForeignKey(a => a.MovieId);
+            .HasForeignKey(a => a.MovieId)
+            .OnDelete(DeleteBehavior.Cascade); ;
     }
 }

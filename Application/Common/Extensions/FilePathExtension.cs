@@ -17,6 +17,9 @@ public static class FilePathExtension
         }
     }
 
+    public static string ExtractFileNameByUrl(this string url)
+        => System.IO.Path.GetFileName(new Uri(url).AbsolutePath);
+
     private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
 
         #region Big freaking list of mime types

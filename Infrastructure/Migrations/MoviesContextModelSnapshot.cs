@@ -52,7 +52,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actors");
+                    b.ToTable("Actors", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Genre", b =>
@@ -75,7 +75,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Movie", b =>
@@ -111,7 +111,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MovieActors", b =>
@@ -133,7 +133,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ActorId");
 
-                    b.ToTable("MovieActors");
+                    b.ToTable("MovieActors", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MovieGenres", b =>
@@ -148,7 +148,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("MovieGenres");
+                    b.ToTable("MovieGenres", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MovieTheater", b =>
@@ -169,7 +169,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovieTheaters");
+                    b.ToTable("MovieTheaters", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MovieTheaterMovies", b =>
@@ -184,7 +184,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("MovieTheaterId");
 
-                    b.ToTable("MovieTheaterMovies");
+                    b.ToTable("MovieTheaterMovies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MovieActors", b =>

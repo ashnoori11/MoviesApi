@@ -1,8 +1,9 @@
-﻿namespace Application.Movie.Queries;
+﻿using MediatR;
+
+namespace Application.Movie.Queries;
 
 public class GetAllMoviesWithPaginationQuery
 {
 
 }
-
 
