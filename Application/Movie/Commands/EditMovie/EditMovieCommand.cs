@@ -1,4 +1,5 @@
-﻿using Application.Common.Models;
+﻿using Application.Common.Extensions;
+using Application.Common.Models;
 using Application.Common.Utilities;
 using Application.Dtos;
 using Domain.Entities;
@@ -49,12 +50,11 @@ public class EditMovieCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<E
             if (!uploadPictureResult.Status)
                 return Result<int>.Failure($"can not upload image : {uploadPictureResult.Message}");
 
-            recentPoster = getTheMovie.Poster;
+            recentPoster = getTheMovie.Poster.ExtractFileNameByUrl();
             getTheMovie.SetPoster(uploadPictureResult.FileRoute);
         }
 
         getTheMovie.SetReleaseDate(request.ReleaseDate);
-        await _unitOfWork.MovieRepository.UpdateMovieAsync(getTheMovie, cancellationToken);
 
         // genres
         getTheMovie.MovieGenres.Clear();
@@ -80,6 +80,7 @@ public class EditMovieCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<E
 
         newMovieTheaterMovies.ForEach(item => getTheMovie.SetTheaterMovies(item));
 
+        await _unitOfWork.MovieRepository.UpdateMovieAsync(getTheMovie, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(recentPoster))

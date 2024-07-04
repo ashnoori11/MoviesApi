@@ -39,12 +39,12 @@ public class GetMovieForEditQueryHandler(IUnitOfWork unitOfWork) : IRequestHandl
         int[] selectedMovieTheaterIdies = getTheMovie.MovieTheaterMovies.Select(a => a.MovieTheaterId).ToArray();
         var selectedMovieTheaters = await _unitOfWork
             .GetQueryRepository<Domain.Entities.MovieTheater>()
-            .GetSpecificColumsByFilterAndOrderByAsync(a => selectedGenresIdies.Contains(a.Id), a => 
+            .GetSpecificColumsByFilterAndOrderByAsync(a => selectedMovieTheaterIdies.Contains(a.Id), a => 
             new MovieTheaterDetailDto { Id = a.Id, Name = a.Name,Latitude = a.Location.Y,Longitude = a.Location.X}, cancellationToken);
 
         var nonSelectedMovieTheaters = await _unitOfWork
             .GetQueryRepository<Domain.Entities.MovieTheater>()
-            .GetSpecificColumsByFilterAndOrderByAsync(a => !selectedGenresIdies.Contains(a.Id), a =>
+            .GetSpecificColumsByFilterAndOrderByAsync(a => !selectedMovieTheaterIdies.Contains(a.Id), a =>
             new MovieTheaterDetailDto { Id = a.Id, Name = a.Name, Latitude = a.Location.Y, Longitude = a.Location.X }, cancellationToken);
 
         var resultDetails = new MovieDetailForEditDto
