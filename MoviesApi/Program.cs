@@ -26,7 +26,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration.GetValue<bool>("UseDistributedCache"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {

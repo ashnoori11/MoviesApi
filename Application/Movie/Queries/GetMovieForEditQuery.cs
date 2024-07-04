@@ -57,6 +57,7 @@ public class GetMovieForEditQueryHandler(IUnitOfWork unitOfWork) : IRequestHandl
             ReleaseDate = getTheMovie.ReleaseDate,
             Trailer = getTheMovie.Trailer,
             SelectedActors = selectedActors,
+            Summery = getTheMovie.Summery,
             SelectedGenre = selectedGenrs.ToList(),
             NonSelectedGenre = nonSelectedGenres.ToList(),
             SelectedMovieTheaters = selectedMovieTheaters.ToList(),

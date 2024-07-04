@@ -13,6 +13,7 @@ public record MovieDetailForEditDto
     public DateTime? ReleaseDate { get; set; }
     public string Poster { get; set; }
     public string PosterURL { get; set; }
+    public string Summery { get; set; }
 
     [JsonPropertyName("nonSelectedGenre")]
     public List<GenreDto> NonSelectedGenre { get; set; }
