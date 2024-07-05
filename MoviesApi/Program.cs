@@ -12,8 +12,11 @@ builder.Services.AddOutputCache(opt =>
     opt.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(30);
     opt.AddPolicy("Paginating", builder => builder.Expire(TimeSpan.FromSeconds(10)));
     opt.AddPolicy("SingleRow", builder => builder.Expire(TimeSpan.FromSeconds(5)));
+    opt.AddPolicy("DropDowns", builder => builder.Expire(TimeSpan.FromMinutes(5)));
     //opt.AddPolicy("Reports", builder => builder.Expire(TimeSpan.FromSeconds(60)));
 });
+
+
 builder.Services.AddControllers(options =>
     options.Filters.Add(new ParseBadRequest())
     );

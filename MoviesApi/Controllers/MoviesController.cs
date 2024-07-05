@@ -1,4 +1,5 @@
-﻿using Application.Movie.Commands.DeleteMovie;
+﻿using Application.Dtos;
+using Application.Movie.Commands.DeleteMovie;
 using Application.Movie.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -81,6 +82,20 @@ public class MoviesController : BaseController
         {
             var res = await _mediatR.Send(new LandingPageMoviesQuery(6), cancellationToken);
             return Ok(res);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp);
+        }
+    }
+
+    [HttpGet, Route("Filter")]
+    public async Task<IActionResult> Filter([FromQuery] FilterMoviesDto model, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var res = await _mediatR.Send((FilterMoviesQuery)model, cancellationToken);
+            return Ok(res.Data);
         }
         catch (Exception exp)
         {

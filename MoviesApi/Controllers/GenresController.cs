@@ -53,6 +53,21 @@ public class GenresController : BaseController
         }
     }
 
+    [HttpGet,Route("All")]
+    [OutputCache(PolicyName = "DropDowns")]
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var res = await _mediatR.Send(new GetAllGenresQuery(),cancellationToken);
+            return Ok(res.Data);
+        }
+        catch (Exception exp)
+        {
+            return BadRequest(exp);
+        }
+    }
+
     [HttpPut("{genreId:int}")]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int genreId, [FromBody]CreateGenreDto genre,CancellationToken cancellationToken)
