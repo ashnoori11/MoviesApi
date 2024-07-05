@@ -13,6 +13,7 @@ public class DeleteMovieCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
     public async Task<Result> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
     {
         var getTheMovie = await _unitOfWork.MovieRepository.GetFullMovieByIdAsync(request.Id, cancellationToken);
+
         if (getTheMovie is null)
             return Result.NotFound();
 
@@ -21,7 +22,10 @@ public class DeleteMovieCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler
         if (!string.IsNullOrWhiteSpace(getTheMovie.Poster))
             thePoster = getTheMovie.Poster.ExtractFileNameByUrl();
 
-        await _unitOfWork.MovieRepository.DeleteMovie(getTheMovie, cancellationToken);
+        await _unitOfWork
+            .MovieRepository
+            .DeleteMovie(getTheMovie, cancellationToken);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(thePoster))

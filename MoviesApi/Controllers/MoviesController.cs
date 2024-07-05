@@ -134,7 +134,7 @@ public class MoviesController : BaseController
     {
         try
         {
-            var res = await _mediatR.Send(new DeleteMovieCommand(id,_webHostEnvironment.WebRootPath),cancellationToken);
+            var res = await _mediatR.Send(new DeleteMovieCommand(id, _webHostEnvironment.WebRootPath), cancellationToken);
             return Ok(res);
         }
         catch (Exception exp)
