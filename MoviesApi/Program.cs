@@ -1,9 +1,14 @@
 using Application;
 using DotNetEnv;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MoviesApi.ApiBehavior;
 using MoviesApi.FileStorageServices.Liara;
 using MoviesApi.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +35,26 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration.GetValue<bool>("UseDistributedCache"));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<MoviesContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience=false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
@@ -40,8 +65,8 @@ builder.Services.AddCors(options =>
         .WithOrigins(frontEndUrl)
         .AllowAnyOrigin()
         .AllowAnyHeader()
-        .WithMethods("PUT", "DELETE", "GET","POST")
-        .WithExposedHeaders(new string[] {"totalAmountOfRecords"});
+        .WithMethods("PUT", "DELETE", "GET", "POST")
+        .WithExposedHeaders(new string[] { "totalAmountOfRecords" });
     });
 });
 
@@ -58,7 +83,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions()
 {
-    OnPrepareResponse = ctx => {
+    OnPrepareResponse = ctx =>
+    {
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", builder.Configuration.GetValue<string>("frontend_url"));
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers",
           "Origin, X-Requested-With, Content-Type, Accept");

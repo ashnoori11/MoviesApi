@@ -4,6 +4,11 @@ using System.Reflection;
 using Infrastructure;
 using Application.Services.CacheService.CacheDecorators;
 using Application.Services.CacheService;
+using Application.Services.IdentityServices.Contracts;
+using Application.Services.IdentityServices;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Application.Services.JwtTokenService.Contracts;
+using Application.Services.JwtTokenService;
 
 namespace Application;
 
@@ -25,6 +30,10 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
         });
+
+        services.TryAddScoped<IIdentityFactory, IdentityFactory>();
+        services.TryAddScoped<IJwtTokenService, JwtTokenService>();
+
         return services;
     }
 }
