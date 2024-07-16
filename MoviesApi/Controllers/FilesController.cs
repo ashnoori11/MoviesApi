@@ -1,4 +1,6 @@
 ﻿using Application.Common.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.FileStorageServices.Liara;
 
@@ -6,6 +8,7 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class FilesController : ControllerBase
 {
     private readonly ILiaraStorageService _s3Service;

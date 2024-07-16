@@ -19,7 +19,7 @@ public class AccountsController(IMediator mediatR) : BaseController
     {
         try
         {
-            var res = await mediatR.Send(new CreateAndLoginNewUserCommand(model.Email, model.Password));
+            var res = await mediatR.Send(new CreateAndLoginNewUserCommand(model.Email, model.Password), cancellationToken);
             return Ok(res);
         }
         catch (Exception exp)
@@ -28,9 +28,9 @@ public class AccountsController(IMediator mediatR) : BaseController
         }
     }
 
-    [HttpPost("LogIn")]
+    [HttpPost("Login")]
     [ModelStateValidationFilter]
-    public async Task<IActionResult> LogIn([FromBody] UserCredentialsDto model,CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody] UserCredentialsDto model,CancellationToken cancellationToken)
     {
         try
         {

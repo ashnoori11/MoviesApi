@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos;
 
@@ -12,7 +11,4 @@ public class UserCredentialsDto
         MinLength(6,ErrorMessage ="{0} can not be less than {1} characters"),
         MaxLength(25,ErrorMessage ="{0} can not be more that {1}")]
     public string Password { get; set; }
-
-    [Required,Compare(nameof(Password),ErrorMessage = "{0} does not match the original password")]
-    public string ConfirmPassword { get; set; }
 }

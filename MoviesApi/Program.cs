@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using MoviesApi.ApiBehavior;
 using MoviesApi.FileStorageServices.Liara;
 using MoviesApi.Filters;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,8 @@ builder.Services.AddApplicationServices(builder.Configuration.GetValue<bool>("Us
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MoviesContext>()
     .AddDefaultTokenProviders();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

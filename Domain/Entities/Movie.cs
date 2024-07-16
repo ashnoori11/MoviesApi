@@ -28,7 +28,7 @@ public class Movie
 
     public void SetPoster(string poster) => Poster = poster;
     public void SetReleaseDate(DateTime? releaseDate) => ReleaseDate = releaseDate;
-    public void SetMovieStatus(bool isTheater) => isTheater = isTheater;
+    public void SetMovieStatus(bool isTheater) => InTheaters = isTheater;
     public void SetChanges(string title, string summery, string trailer, bool inTheaters, DateTime? releaseDate, string poster)
     {
         Title = title;
@@ -77,8 +77,8 @@ public class Movie
     public DateTime? ReleaseDate { get; private set; }
     public string Poster { get; private set; }
 
-
     public virtual ICollection<MovieGenres> MovieGenres { get; private set; }
     public virtual ICollection<MovieTheaterMovies> MovieTheaterMovies { get; private set; }
     public virtual ICollection<MovieActors> MovieActors { get; private set; }
+    public virtual ICollection<Rating> Ratings { get; private set; }
 }

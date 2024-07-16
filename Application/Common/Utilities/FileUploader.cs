@@ -162,7 +162,7 @@ public class FileUploader : IDisposable
             using var image = System.Drawing.Image.FromStream(new MemoryStream(imageBytes));
             return true;
         }
-        catch (Exception exp)
+        catch
         {
             res = false;
         }

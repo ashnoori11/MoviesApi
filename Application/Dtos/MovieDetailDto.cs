@@ -14,4 +14,7 @@ public class MovieDetailDto
     public List<GenreDto> Genres { get; set; }
     public List<MovieTheaterDetailDto> MovieTheaters { get; set; }
     public List<MoviesActorsFormDto> Actors { get; set; }
+
+    public double AverageVote { get; set; }
+    public int UserVote { get; set; }
 }

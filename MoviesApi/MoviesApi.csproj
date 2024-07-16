@@ -6,6 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;0219;CS0168;0649;1717;IDE0060;CS9113;</WarningsAsErrors>
+    <NoWarn>1701;1702;nullable</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningsAsErrors>$(WarningsAsErrors);NU1605;0219;CS0168;0649;1717;IDE0060;CS9113;</WarningsAsErrors>
+    <NoWarn>1701;1702;nullable</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.308.4" />
     <PackageReference Include="DotNetEnv" Version="3.0.0" />

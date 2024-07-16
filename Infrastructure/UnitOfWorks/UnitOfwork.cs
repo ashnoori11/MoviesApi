@@ -3,7 +3,6 @@ using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Infrastructure.UnitOfWorks;
 
@@ -73,6 +72,22 @@ public class UnitOfwork : IDisposable, IUnitOfWork
                 _movieRepository = new MovieRepository(_context);
 
             return _movieRepository;
+        }
+    }
+    #endregion
+
+    #region RatingRepository
+    private IRatingRepository _ratingRepository;
+    public IRatingRepository RatingRepository
+    {
+        get
+        {
+            if(_ratingRepository is null)
+            {
+                _ratingRepository = new RatingRepository(_context);
+            }
+
+            return _ratingRepository;
         }
     }
     #endregion

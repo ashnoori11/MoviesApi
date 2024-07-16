@@ -5,6 +5,8 @@ using Application.Genre.Commands.RemoveGenre;
 using Application.Genre.Queries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MoviesApi.Filters;
@@ -13,6 +15,7 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class GenresController : BaseController
 {
     #region constructor

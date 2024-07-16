@@ -35,5 +35,6 @@ public class MoviesContext : IdentityDbContext
     public DbSet<MovieGenres> MovieGenres { get; set; }
     public DbSet<MovieTheaterMovies> MovieTheaterMovies { get; set; }
     public DbSet<MovieActors> MovieActors { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
     #endregion 
 }

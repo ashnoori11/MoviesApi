@@ -2,6 +2,8 @@
 using Application.Movie.Commands.DeleteMovie;
 using Application.Movie.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MoviesApi.Dtos;
@@ -12,26 +14,16 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class MoviesController : BaseController
-{
-    #region constructor
-    private readonly IMediator _mediatR;
-    private readonly ILiaraStorageService _storageService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    public MoviesController(IMediator mediatR,
-        ILiaraStorageService storageService,
+public class MoviesController(IMediator mediatR,
         IHttpContextAccessor httpContextAccessor,
-        IWebHostEnvironment webHostEnvironment)
-    {
-        _mediatR = mediatR;
-        _storageService = storageService;
-        _httpContextAccessor = httpContextAccessor;
-        _webHostEnvironment = webHostEnvironment;
-    }
-    #endregion
+        IWebHostEnvironment webHostEnvironment) : BaseController
+{
+    private readonly IMediator _mediatR = mediatR;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
     [HttpGet, Route("MovieFormInformations")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> MovieFormInformations(CancellationToken cancellationToken)
     {
         try
@@ -47,11 +39,12 @@ public class MoviesController : BaseController
 
     [HttpGet, Route("{id:int}")]
     [OutputCache(PolicyName = "SingleRow")]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
     {
         try
         {
-            var movieData = await _mediatR.Send(new GetMovieByIdQuery(id), cancellationToken);
+            var movieData = await _mediatR.Send(new GetMovieByIdQuery(id,CurrentUserEmail), cancellationToken);
             return Ok(movieData.Data);
         }
         catch (Exception exp)
@@ -62,6 +55,7 @@ public class MoviesController : BaseController
 
     [HttpGet, Route("GetMovieDetailsForEdit/{id:int}")]
     [OutputCache(PolicyName = "SingleRow")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetMovieDetailsForEdit(int id, CancellationToken cancellationToken)
     {
         try
@@ -76,6 +70,7 @@ public class MoviesController : BaseController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         try
@@ -90,6 +85,7 @@ public class MoviesController : BaseController
     }
 
     [HttpGet, Route("Filter")]
+    [AllowAnonymous]
     public async Task<IActionResult> Filter([FromQuery] FilterMoviesDto model, CancellationToken cancellationToken)
     {
         try
@@ -104,6 +100,7 @@ public class MoviesController : BaseController
     }
 
     [HttpPost(Name = "CreateNewMovie")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromForm] MovieFormDto model, CancellationToken cancellationToken)
     {
@@ -126,6 +123,7 @@ public class MoviesController : BaseController
     }
 
     [HttpPut, Route("{id:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int id, [FromForm] EditMovieFormDto model, CancellationToken cancellationToken)
     {
@@ -145,6 +143,7 @@ public class MoviesController : BaseController
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         try

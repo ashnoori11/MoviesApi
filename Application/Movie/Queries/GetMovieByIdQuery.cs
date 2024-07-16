@@ -1,27 +1,48 @@
 ﻿using Application.Common.Models;
 using Application.Dtos;
 using Application.Genre.Queries;
+using Application.Services.IdentityServices.Contracts;
 using Infrastructure.UnitOfWorks;
 using MediatR;
 
 namespace Application.Movie.Queries;
 
-public record GetMovieByIdQuery(int Id) : IRequest<Result<MovieDetailDto>>;
+public record GetMovieByIdQuery(int Id, string? UserEmail) : IRequest<Result<MovieDetailDto>>;
 
-public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, Result<MovieDetailDto>>
+public class GetMovieByIdQueryHandler(IUnitOfWork unitOfWork, IIdentityFactory identityFactory) : IRequestHandler<GetMovieByIdQuery, Result<MovieDetailDto>>
 {
-    #region constructor
-    private readonly IUnitOfWork _unitOfWork;
-    public GetMovieByIdQueryHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IIdentityFactory _identityFactory = identityFactory;
 
     public async Task<Result<MovieDetailDto>> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
     {
         var getMovie = await _unitOfWork.MovieRepository.FindMovieByIdAsync(request.Id, cancellationToken);
         if (getMovie is null)
             return Result<MovieDetailDto>.NotFound();
+
+        double averageVote = 0.0;
+        int userVote = 0;
+
+        var hasAnyRate = await _unitOfWork.RatingRepository.HasAnyRateAsync(getMovie.Id, cancellationToken);
+        if (hasAnyRate)
+        {
+            averageVote = await _unitOfWork
+                .RatingRepository
+                .GetAverageRateByMovieIdAsync(getMovie.Id, cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(request.UserEmail))
+            {
+                var getUser = await _identityFactory.CreateUserManager().FindByEmailAsync(request.UserEmail);
+                if (getUser is object)
+                {
+                    var getUserVote = await _unitOfWork
+                        .RatingRepository
+                        .GetRatingByUserIdAndMovieIdAsync(getUser.Id,getMovie.Id,cancellationToken);
+
+                    userVote = getUserVote.Rate;
+                }
+            }
+        }
 
         var dto = new MovieDetailDto
         {
@@ -32,6 +53,8 @@ public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, Resul
             InTheaters = getMovie.InTheaters,
             ReleaseDate = getMovie.ReleaseDate,
             Poster = getMovie.Poster,
+            AverageVote = averageVote,
+            UserVote = userVote,
         };
 
         int[] relatedGenresId = getMovie.MovieGenres.Select(a => a.GenreId).ToArray();
@@ -61,11 +84,10 @@ public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, Resul
             if (getCharacter is object)
                 character = getCharacter.Character ?? string.Empty;
 
-            moviesActorsDtoList.Add(new MoviesActorsFormDto { Id = item.Id,Name = item.Name,Picture = item.Picture,Character = character });
+            moviesActorsDtoList.Add(new MoviesActorsFormDto { Id = item.Id, Name = item.Name, Picture = item.Picture, Character = character });
         }
 
         dto.Actors = moviesActorsDtoList;
         return Result<MovieDetailDto>.Success(dto);
     }
-    #endregion
 }
