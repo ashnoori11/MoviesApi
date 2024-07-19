@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Authentication\Queries\" />
     <Folder Include="Common\Behaviours\" />
     <Folder Include="Rating\Queries\" />
   </ItemGroup>

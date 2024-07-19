@@ -16,12 +16,14 @@ public class CreateAndLoginNewUserCommandHandler(IIdentityFactory identityFactor
     public async Task<AuthenticationResponse> Handle(CreateAndLoginNewUserCommand request, CancellationToken cancellationToken)
     {
         var user = new IdentityUser { UserName = request.Email, Email = request.Email };
-        var res = await _identityFactory.CreateUserManager().CreateAsync(user, request.Password);
+        var res = await _identityFactory
+            .CreateUserManager()
+            .CreateAsync(user, request.Password);
 
         if (res.Succeeded)
         {
             var tokenResult = await _jwtTokenService
-                .GenerateTokenAsync(request.Email, cancellationToken);
+                .GenerateTokenAsync(request.Email, cancellationToken,false);
 
             return AuthenticationResponse.Succeeded(tokenResult.Token, tokenResult.Expiration);
         }

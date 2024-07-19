@@ -15,7 +15,7 @@ public class BaseController : ControllerBase
             {
                 if (string.IsNullOrWhiteSpace(_email))
                 {
-                    _email = User.FindFirstValue("email");
+                    _email = User.FindFirstValue("email") ?? User.FindFirstValue(ClaimTypes.Email);
                 }
 
                 return _email;

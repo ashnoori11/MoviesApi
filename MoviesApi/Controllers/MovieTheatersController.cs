@@ -5,6 +5,8 @@ using Application.MovieTheater.Commands.UpdateMovieTheater;
 using Application.MovieTheater.Queries;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MoviesApi.Filters;
@@ -13,7 +15,6 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class MovieTheatersController : BaseController
 {
     #region constructor
@@ -55,6 +56,7 @@ public class MovieTheatersController : BaseController
     }
 
     [HttpPut("{movieTheaterId:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int movieTheaterId, [FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
     {
@@ -72,6 +74,7 @@ public class MovieTheatersController : BaseController
     }
 
     [HttpPost(Name = "CreateMovieTheater")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromBody] MovieTheatersCreateDto movieTheater, CancellationToken cancellationToken)
     {
@@ -87,6 +90,7 @@ public class MovieTheatersController : BaseController
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         try

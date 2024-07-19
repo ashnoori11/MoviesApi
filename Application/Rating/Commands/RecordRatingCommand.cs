@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Rating.Commands;
 
-public record RecordRatingCommand(string Email,int MovieId,int Rating) : IRequest<Result>;
+public record RecordRatingCommand(string Email, int MovieId, int Rating) : IRequest<Result>;
 public class RecordRatingCommandHandler(IUnitOfWork unitOfWork, IIdentityFactory identityFactory) : IRequestHandler<RecordRatingCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -22,24 +22,24 @@ public class RecordRatingCommandHandler(IUnitOfWork unitOfWork, IIdentityFactory
 
         var getMovie = await _unitOfWork
             .MovieRepository
-            .GetJustMovieByIdAsync(request.MovieId,cancellationToken);
+            .GetJustMovieByIdAsync(request.MovieId, cancellationToken);
 
         if (getMovie is null)
             return Result.NotFound();
 
         var tryFindRateRecord = await _unitOfWork
             .RatingRepository
-            .GetRatingByUserIdAndMovieIdAsync(user.Id,getMovie.Id,cancellationToken);
+            .GetRatingByUserIdAndMovieIdAsync(user.Id, getMovie.Id, cancellationToken);
 
-        if(tryFindRateRecord is null)
+        if (tryFindRateRecord is null)
         {
-            var newRate = new Domain.Entities.Rating(request.Rating,getMovie.Id,user.Id);
-            await _unitOfWork.RatingRepository.InsertRatingAsync(newRate,cancellationToken);
+            var newRate = new Domain.Entities.Rating(request.Rating, getMovie.Id, user.Id);
+            await _unitOfWork.RatingRepository.InsertRatingAsync(newRate, cancellationToken);
         }
         else
         {
             tryFindRateRecord.UpdateRate(request.Rating);
-            await _unitOfWork.RatingRepository.UpdateRatingAsync(tryFindRateRecord,cancellationToken);
+            await _unitOfWork.RatingRepository.UpdateRatingAsync(tryFindRateRecord, cancellationToken);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

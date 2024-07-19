@@ -2,5 +2,5 @@
 
 public interface IJwtTokenService
 {
-    Task<(string Token, DateTime Expiration)> GenerateTokenAsync(string userName,CancellationToken cancellationToken);
+    Task<(string Token, DateTime Expiration)> GenerateTokenAsync(string userName,CancellationToken cancellationToken, bool isAdmin);
 }

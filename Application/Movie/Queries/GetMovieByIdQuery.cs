@@ -37,7 +37,7 @@ public class GetMovieByIdQueryHandler(IUnitOfWork unitOfWork, IIdentityFactory i
                 {
                     var getUserVote = await _unitOfWork
                         .RatingRepository
-                        .GetRatingByUserIdAndMovieIdAsync(getUser.Id,getMovie.Id,cancellationToken);
+                        .GetRatingByUserIdAndMovieIdAsync(getUser.Id, getMovie.Id, cancellationToken);
 
                     userVote = getUserVote.Rate;
                 }

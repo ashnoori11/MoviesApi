@@ -8,7 +8,7 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
 public class FilesController : ControllerBase
 {
     private readonly ILiaraStorageService _s3Service;

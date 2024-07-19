@@ -2,6 +2,7 @@
 using Application.Services.IdentityServices.Contracts;
 using Application.Services.JwtTokenService.Contracts;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Authentication.Commands.LoginUser;
 
@@ -14,15 +15,29 @@ public class LoginUserCommandHandler(IIdentityFactory identityFactory, IJwtToken
 
     public async Task<AuthenticationResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var result = await _identityFactory.CreateSignInManager().PasswordSignInAsync(request.Email,request.Password,
+        var result = await _identityFactory
+            .CreateSignInManager()
+            .PasswordSignInAsync(request.Email,request.Password,
             isPersistent:false,lockoutOnFailure:false);
 
         if (result.Succeeded)
         {
-            var tokenResult = await _jwtTokenService
-                .GenerateTokenAsync(request.Email,cancellationToken);
+            var _userManager = _identityFactory.CreateUserManager();
+            var getUser = await _userManager.FindByEmailAsync(request.Email);
+            var userClaims = await _userManager.GetClaimsAsync(getUser);
 
-            return AuthenticationResponse.Succeeded(tokenResult.Token, tokenResult.Expiration);
+            bool isAdmin = false;
+
+            if(userClaims.Any(a=>a.Value == "admin"))
+            {
+                isAdmin = true;
+            }
+
+            var tokenResult = await _jwtTokenService
+                .GenerateTokenAsync(request.Email,cancellationToken, isAdmin);
+
+            return AuthenticationResponse
+                .Succeeded(tokenResult.Token, tokenResult.Expiration);
         }
         else
         {

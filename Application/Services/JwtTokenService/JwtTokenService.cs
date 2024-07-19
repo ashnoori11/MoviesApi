@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace Application.Services.JwtTokenService;
 
@@ -18,21 +17,22 @@ public class JwtTokenService : IJwtTokenService
             .Build();
     }
 
-    public async Task<(string Token, DateTime Expiration)> GenerateTokenAsync(string userName, CancellationToken cancellationToken)
+    public async Task<(string Token, DateTime Expiration)> GenerateTokenAsync(string userName, CancellationToken cancellationToken, bool isAdmin)
     {
         var claims = new List<Claim>()
         {
-            new Claim("email",userName)
+            new Claim("email",userName),
+            new Claim("role",isAdmin ? "admin":string.Empty)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["keyjwt"]));
-        var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var expiration = DateTime.UtcNow.AddDays(1);
-        var token = new JwtSecurityToken(issuer:null,
-            audience:null,claims,expiration,signingCredentials:creds);
+        var token = new JwtSecurityToken(issuer: null,
+            audience: null, claims, null, expiration, signingCredentials: creds);
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await Task.FromResult((new JwtSecurityTokenHandler().WriteToken(token),expiration));
+        return await Task.FromResult((new JwtSecurityTokenHandler().WriteToken(token), expiration));
     }
 }

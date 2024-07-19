@@ -8,7 +8,9 @@ public class RatingEntityConfiguration : IEntityTypeConfiguration<Rating>
 {
     public void Configure(EntityTypeBuilder<Rating> builder)
     {
-        builder.HasKey(a => a.UserId);
+        builder.HasKey(a => a.Id);
+        builder.Property(a => a.Id)
+            .ValueGeneratedOnAdd();
 
         builder.Property(a => a.Rate)
             .HasDefaultValue(0)
@@ -19,10 +21,10 @@ public class RatingEntityConfiguration : IEntityTypeConfiguration<Rating>
 
         builder.HasOne(a => a.Movie)
             .WithMany(a => a.Ratings)
-            .HasForeignKey(a=>a.MovieId);
+            .HasForeignKey(a => a.MovieId);
 
         builder.HasOne(a => a.User)
             .WithMany()
-            .HasForeignKey(a=>a.UserId);
+            .HasForeignKey(a => a.UserId);
     }
 }

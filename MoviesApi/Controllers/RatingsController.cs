@@ -20,7 +20,7 @@ public class RatingsController(IMediator mediator) : BaseController
         try
         {
             var res = await _mediator
-                .Send(new RecordRatingCommand(CurrentUserEmail,model.MovieId,model.Rating),cancellationToken);
+                .Send(new RecordRatingCommand(CurrentUserEmail, model.MovieId, model.Rating), cancellationToken);
 
             return Ok(res);
         }

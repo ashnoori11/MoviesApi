@@ -15,7 +15,7 @@ namespace MoviesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
 public class GenresController : BaseController
 {
     #region constructor
@@ -57,6 +57,7 @@ public class GenresController : BaseController
     }
 
     [HttpGet,Route("All")]
+    [AllowAnonymous]
     [OutputCache(PolicyName = "DropDowns")]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {

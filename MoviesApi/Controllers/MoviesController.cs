@@ -23,7 +23,7 @@ public class MoviesController(IMediator mediatR,
     private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
     [HttpGet, Route("MovieFormInformations")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     public async Task<IActionResult> MovieFormInformations(CancellationToken cancellationToken)
     {
         try
@@ -55,7 +55,7 @@ public class MoviesController(IMediator mediatR,
 
     [HttpGet, Route("GetMovieDetailsForEdit/{id:int}")]
     [OutputCache(PolicyName = "SingleRow")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     public async Task<IActionResult> GetMovieDetailsForEdit(int id, CancellationToken cancellationToken)
     {
         try
@@ -100,7 +100,7 @@ public class MoviesController(IMediator mediatR,
     }
 
     [HttpPost(Name = "CreateNewMovie")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Post([FromForm] MovieFormDto model, CancellationToken cancellationToken)
     {
@@ -123,7 +123,7 @@ public class MoviesController(IMediator mediatR,
     }
 
     [HttpPut, Route("{id:int}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     [ModelStateValidationFilter]
     public async Task<IActionResult> Put(int id, [FromForm] EditMovieFormDto model, CancellationToken cancellationToken)
     {
@@ -143,7 +143,7 @@ public class MoviesController(IMediator mediatR,
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "AdminOnly")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         try
